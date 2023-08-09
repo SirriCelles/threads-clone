@@ -1,8 +1,11 @@
+//app/page.tsx
+import { UserButton } from "@clerk/nextjs";
 
 export default function Home() {
   return (
-    <main>
-      <h1> Threads Hello</h1>
-    </main>
+    <>
+      {/* <UserButton afterSignOutUrl="/"/> */}
+      <h1 className="head-text text-left">Home</h1>
+    </>
   )
 }
