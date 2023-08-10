@@ -38,6 +38,7 @@ interface Props {
 
 const AccountProfile = ({ user, btnTitle }: Props) => {
   const [files, setFiles] = useState<File[]>([]);
+  const { startUpload } = useUploadThing("media");
 
   const form = useForm({
     // Setting some validation using the ts zod resolver
@@ -72,7 +73,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
   }
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof UserValidation>) {
+  const onSubmit = async (values: z.infer<typeof UserValidation>) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     // the value from an imae is called blob
@@ -82,9 +83,12 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
     const hasImageChanged = isBase64Image(blob);
 
     if(hasImageChanged) {
-      const imageRes =
+      const imageRes = await startUpload(files);
+
+      if(imageRes && imageRes[0].url) {
+        values.profile_photo = imageRes[0].url;
+      }
     }
-    console.log(values)
   }
 
   return (
