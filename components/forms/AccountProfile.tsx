@@ -77,6 +77,8 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     // the value from an imae is called blob
+
+    // Addin File Upload
     const blob = values.profile_photo;
 
 
@@ -89,6 +91,8 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
         values.profile_photo = imageRes[0].url;
       }
     }
+
+    // TODO: Update user profile
   }
 
   return (
