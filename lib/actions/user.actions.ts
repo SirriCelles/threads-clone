@@ -1,18 +1,27 @@
 // Creating server actions
-'use server'
+"use server";
 
 import { revalidatePath } from "next/cache";
 import User from "../models/user.model";
-import { connectToDatabase } from "../mongoose"
+import { connectToDatabase } from "../mongoose";
 
-export async function updateUser(
-  userId: string,
-  username: string,
-  name: string,
-  image: string,
-  bio: string,
-  path: string
-  ): Promise<void> {
+interface UserData {
+  userId: string;
+  username: string;
+  name: string;
+  bio: string;
+  image: string;
+  path: string;
+}
+
+export async function updateUser({
+  userId,
+  username,
+  name,
+  bio,
+  image,
+  path,
+}: UserData): Promise<void> {
   connectToDatabase();
 
   try {
@@ -23,18 +32,17 @@ export async function updateUser(
         name,
         bio,
         image,
-        onboarded: true
+        onboarded: true,
       },
       {
         upsert: true, //both update for existing users and insert for new users if the record doesn't exists
       }
     );
-  
-    if(path === '/profile/edit') {
+
+    if (path === "/profile/edit") {
       revalidatePath(path);
     }
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`);
   }
-
 }
