@@ -1,4 +1,6 @@
 export interface ThreadDTO {
-  thread: string,
-  accountId: string
+  text: string,
+  author: string,
+  communityId: string | null,
+  path?: string
 }
