@@ -4,3 +4,4 @@ export const ThreadValidation = z.object({
   thread: z.string().nonempty().min(3, { message: 'Minimum of 3 characters'}),
   accountId: z.string(),
 });
+
