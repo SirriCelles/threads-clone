@@ -1,5 +1,6 @@
 import PostThread from "@/components/forms/PostThread";
 import ProfileHeader from "@/components/shared/ProfileHeader";
+import ThreadsTab from "@/components/shared/ThreadsTab";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { profileTabs } from "@/constants";
 import { fetchUser } from "@/lib/actions/user.actions";
@@ -45,10 +46,32 @@ const Page = async ({ params }: {params: { id: string}}) => {
                     height={24}
                   />
                   <p className="max-sm:hidden">{tab.label}</p>
+                  {
+                    tab.label === 'Threads' && (
+                      <p className="ml-1 rounded-sm bg-light-4 px-2 py-1 text-tiny-medium">
+                        {userInfo?.threads?.length}
+                      </p>
+                    )
+                  }
                 </TabsTrigger>
               ))
             }
           </TabsList>
+          {
+            profileTabs.map((tab) => (
+              <TabsContent
+                key={`content-${tab.label}`}
+                value={tab.value}
+                className="w-full text-light-1"
+                >
+                  <ThreadsTab
+                     currentUserId={user.id}
+                     accountId={userInfo.id}
+                     accountType="User"
+                  />
+              </TabsContent>
+            ))
+          }
         </Tabs>
       </div>
     </section>
