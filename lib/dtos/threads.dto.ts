@@ -13,6 +13,7 @@ export interface AuthorDTO {
   id: string;
 }
 export interface ThreadPropsDTO {
+  _id?: string;
   id: string;
   currentUserId?: string;
   parentId: string | null;
