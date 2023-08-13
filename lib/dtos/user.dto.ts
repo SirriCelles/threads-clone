@@ -1,4 +1,4 @@
-import { CommunitiesDTO } from "./community.dto";
+import { CommunityDTO } from "./community.dto";
 import { ThreadDTO } from "./threads.dto";
 
 export interface UserDTO {
@@ -10,10 +10,21 @@ export interface UserDTO {
   bio: string;
   onboarded: boolean;
   threads?: Array<ThreadDTO>
-  communities?: Array<CommunitiesDTO>
+  communities?: Array<CommunityDTO>
 
 }
 
 export interface AuthUserDTO {
 
+}
+
+export interface UserDataDTO {
+  userId?: string;
+  username: string;
+  name: string;
+  bio: string;
+  image: string;
+  path?: string;
+  accountId?: string;
+  authUser?: string;
 }

@@ -4,15 +4,7 @@
 import { revalidatePath } from "next/cache";
 import User from "../models/user.model";
 import { connectToDatabase } from "../mongoose";
-
-interface UserData {
-  userId: string;
-  username: string;
-  name: string;
-  bio: string;
-  image: string;
-  path: string;
-}
+import { UserDataDTO } from "../dtos/user.dto";
 
 // Automatically create endpoint to create and update a new user
 export async function updateUser({
@@ -22,7 +14,7 @@ export async function updateUser({
   bio,
   image,
   path,
-}: UserData): Promise<void> {
+}: UserDataDTO): Promise<void> {
   connectToDatabase();
 
   try {
