@@ -30,4 +30,42 @@ export async function createThread(
 
 }
 
+export const fetchThreads = async (pageNumber: number = 1, pageSize: number = 20) => {
+  try {
+    connectToDatabase();
+
+    // caculate the number of threads to skip, depending on the amount
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    // Fetch the posts that have no parents( top-level threads)
+    const threadsQuery = Thread.find({
+      parentId: {$in: [null, undefined]}})
+      .sort({ createdAt: 'desc'})
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate({path: 'author', model: User})
+      .populate({
+        path: 'children',
+        populate: {
+          path: 'author',
+          model: User,
+          select: "_id name parentId, image"
+        }
+      })
+
+      const  totalThreads = await Thread.countDocuments({ parentId: {$in: [null, undefined]}});
+
+      const threads = await threadsQuery.exec();
+
+      // Checkin if we have a next page
+      const isNext = totalThreads > skipAmount + threads.length;
+
+      return { threads, isNext}
+
+
+  } catch (error: any) {
+    throw new Error(`Failed to fetch threads: ${error.message}`)
+  }
+}
+
 
