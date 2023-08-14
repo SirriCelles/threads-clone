@@ -6,6 +6,8 @@ import User from "../models/user.model";
 import { connectToDatabase } from "../mongoose";
 import { UserDataDTO } from "../dtos/user.dto";
 import Thread from "../models/thread.model";
+import { FilterQuery } from "mongoose";
+import { SearchParamsDTO } from "../dtos/searchParams.dto";
 
 // Automatically create endpoint to create and update a new user
 export async function updateUser({
@@ -83,3 +85,52 @@ export const fetchUserPosts = async (userId: string) => {
     throw new Error(`Failed to fetch posts: ${error.messae}`)
   }
 }
+
+
+
+export const fetchAllUsers = async ({
+  userId,
+  searchString = "",
+  pageNumber = 1,
+  pageSize = 20,
+  sortBy = "desc"
+
+}: SearchParamsDTO ) => {
+  try {
+    connectToDatabase();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    const regex = new RegExp(searchString, "i");
+
+    const query: FilterQuery<typeof User> = {
+      id: { $ne: userId },
+    }
+
+    if(searchString.trim() !== '') {
+      query.$or = [
+        {username: {$regex: regex}},
+        {name: {$regex: regex}}
+      ]
+    }
+
+    const sortOptions = { createdAt: sortBy };
+
+    const usersQuery = User.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize);
+
+    const users = await usersQuery.exec();
+
+    const totalUsersCount = await User.countDocuments(query);
+
+
+    const isNext = totalUsersCount > skipAmount + users.length;
+
+    return { users, isNext };
+  } catch (error: any) {
+     throw new Error(`Failed to get users: ${error.message}`);
+  }
+}
+
