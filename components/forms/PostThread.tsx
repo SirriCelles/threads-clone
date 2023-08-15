@@ -18,6 +18,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ThreadValidation } from '@/lib/validations/thread';
 import { createThread } from '@/lib/actions/thread.actions';
 import { ThreadDTO } from '@/lib/dtos/threads.dto';
+import { useOrganization } from '@clerk/nextjs';
 
 
 
@@ -25,6 +26,7 @@ import { ThreadDTO } from '@/lib/dtos/threads.dto';
 
   const router = useRouter();
   const pathname = usePathname();
+  const { organization } = useOrganization();
 
   const form = useForm({
     // Setting some validation using the ts zod resolver
@@ -36,12 +38,20 @@ import { ThreadDTO } from '@/lib/dtos/threads.dto';
   });
 
   const onSubmit = async (values: z.infer<typeof ThreadValidation>) => {
+    console.log( organization ? true : false);
+
     const threadData: ThreadDTO = {
       text: values.thread,
       author: userId,
       path: pathname,
-      communityId: null
+      communityId: organization ? organization.id : null,
     }
+
+    console.log(threadData);
+
+
+    return;
+
     await createThread(threadData);
 
     router.push('/');

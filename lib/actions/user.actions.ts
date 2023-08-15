@@ -8,6 +8,7 @@ import { UserDataDTO } from "../dtos/user.dto";
 import Thread from "../models/thread.model";
 import { FilterQuery } from "mongoose";
 import { SearchParamsDTO } from "../dtos/searchParams.dto";
+import Community from "../models/community.model";
 
 // Automatically create endpoint to create and update a new user
 export async function updateUser({
@@ -47,12 +48,11 @@ export async function fetchUser(userId: string) {
   try {
     connectToDatabase();
 
-    return await User
-      .findOne({ id: userId })
-    //  .populate({
-    //   path: 'communities',
-    //   model: Community
-    // });
+    return await User.findOne({ id: userId })
+     .populate({
+      path: 'communities',
+      model: Community
+    });
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`)
   }
@@ -68,15 +68,22 @@ export const fetchUserPosts = async (userId: string) => {
     .populate({
       path: 'threads',
       model: Thread,
-      populate: {
-        path: 'children',
-        model: Thread,
-        populate: {
-          path: 'author',
-          model: User,
-          select: 'id name image',
-        }
-      }
+      populate: [
+        {
+          path: "community",
+          model: Community,
+          select: "name id image _id", // Select the "name" and "_id" fields from the "Community" model
+        },
+        {
+          path: 'children',
+          model: Thread,
+          populate: {
+            path: 'author',
+            model: User,
+            select: 'id name image',
+          }
+        },
+      ]
     });
 
     return threads;
