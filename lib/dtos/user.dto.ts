@@ -27,4 +27,5 @@ export interface UserDataDTO {
   path?: string;
   accountId?: string;
   authUser?: string;
+  type?: 'User' | 'Community'
 }

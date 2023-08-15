@@ -47,11 +47,6 @@ import { useOrganization } from '@clerk/nextjs';
       communityId: organization ? organization.id : null,
     }
 
-    console.log(threadData);
-
-
-    return;
-
     await createThread(threadData);
 
     router.push('/');
